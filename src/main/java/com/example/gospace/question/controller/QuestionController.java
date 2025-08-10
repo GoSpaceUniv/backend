@@ -1,5 +1,8 @@
 package com.example.gospace.question.controller;
 
-public class QuestionController {
+import org.springframework.web.bind.annotation.RestController;
 
+@RestController
+public class QuestionController {
+//QNaaa
 }
