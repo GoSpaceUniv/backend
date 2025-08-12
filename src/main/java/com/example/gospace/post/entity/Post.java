@@ -1,5 +1,6 @@
 package com.example.gospace.post.entity;
 
+import com.example.gospace.post.dto.UpdatePostRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -69,4 +70,17 @@ public class Post {
 //    @Column(name = "anno_key", length = 50, unique = true)
 //    private String annoKey;
 
+    public Post(String title, String content, Category category, boolean isAnon) {
+        this.title = title;
+        this.content = content;
+        this.category = category;
+        this.isAnon = isAnon;
+    }
+
+    public void update(UpdatePostRequestDto dto) {
+        this.title = dto.title();
+        this.content = dto.content();
+        this.category = dto.category();
+        this.isAnon = dto.isAnon();
+    }
 }
