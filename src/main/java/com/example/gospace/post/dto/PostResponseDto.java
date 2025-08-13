@@ -5,8 +5,8 @@ import com.example.gospace.post.entity.Post;
 
 import java.util.List;
 
-public record PostResponseDto(String title, String content, Category category) {
+public record PostResponseDto(Long id, String title, String content, Category category) {
     public static PostResponseDto fromEntity(Post post){
-        return new PostResponseDto(post.getTitle(), post.getContent(), post.getCategory());
+        return new PostResponseDto(post.getId(), post.getTitle(), post.getContent(), post.getCategory());
     }
 }
