@@ -7,8 +7,8 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 //테이블 연결
-@Entity
-@Table(name = "Answer") // 테이블명
+@Entity(name = "Answer")            // ★ JPQL 엔티티명 지정
+@Table(name = "answer")
 public class AnswerEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

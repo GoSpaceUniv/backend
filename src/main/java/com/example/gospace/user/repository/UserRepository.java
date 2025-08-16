@@ -1,5 +1,8 @@
 package com.example.gospace.user.repository;
 
-public interface UserRepository {
+import com.example.gospace.user.entity.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
 
 }
