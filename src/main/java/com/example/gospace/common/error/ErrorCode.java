@@ -37,7 +37,6 @@ public enum ErrorCode {
     ANSWER_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ANSWER500", "답변 삭제에 실패했습니다."),
 
 
-
     ;
     private final HttpStatus status;
     private final String code;
