@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public enum ErrorCode {
-    //common
+
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "COMMON400", "잘못된 요청입니다."),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "COMMON401", "인증이 필요합니다."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "COMMON405", "잘못된 HTTP 메서드를 호출했습니다."),
@@ -14,6 +14,7 @@ public enum ErrorCode {
     INVALID_ENUM_FORMAT(HttpStatus.BAD_REQUEST, "COMMON400", "'%s'은(는) 유효한 %s 값이 아닙니다."),
 
     // mypage
+
     INVALID_USER_ID(HttpStatus.BAD_REQUEST, "USER400", "userId가 올바르지 않습니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER404", "사용자를 찾을 수 없습니다."),
     PAGEABLE_REQUIRED(HttpStatus.BAD_REQUEST, "PAGE400", "페이지 정보가 없습니다."),
@@ -22,7 +23,8 @@ public enum ErrorCode {
     MYPAGE_COMMENTS_QUERY_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MYPAGE500", "내가 쓴 댓글을 조회할 수 없습니다. 요청 값을 확인해 주세요."),
     MYPAGE_ANSWERS_QUERY_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "MYPAGE500", "멘토 답변 내역을 조회할 수 없습니다. 요청 값을 확인해 주세요."),
 
-    // Quesiton
+    //Question
+    // ===== 질문(Question) 전용 추가 =====
     QUESTION_INVALID_INPUT(HttpStatus.BAD_REQUEST, "QUESTION400", "질문 입력이 올바르지 않습니다."),
     QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, "QUESTION404", "질문을 찾을 수 없습니다."),
     QUESTION_CREATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "QUESTION500", "질문 생성에 실패했습니다."),
@@ -37,7 +39,7 @@ public enum ErrorCode {
     ANSWER_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ANSWER500", "답변 삭제에 실패했습니다."),
 
 
-    ;
+
     private final HttpStatus status;
     private final String code;
     private final String message;

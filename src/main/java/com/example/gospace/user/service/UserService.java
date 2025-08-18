@@ -2,6 +2,10 @@ package com.example.gospace.user.service;
 
 import com.example.gospace.common.exception.BusinessException;
 import com.example.gospace.common.error.ErrorCode;
+import com.example.gospace.common.error.ErrorCode;
+import com.example.gospace.common.exception.BusinessException;
+import com.example.gospace.user.dto.MeResponse;
+import com.example.gospace.user.dto.SignupRequest;
 import com.example.gospace.user.dto.UserDto;
 import com.example.gospace.user.entity.Role;
 import com.example.gospace.user.entity.User;
@@ -9,6 +13,9 @@ import com.example.gospace.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -18,6 +25,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
@@ -48,6 +58,49 @@ public class UserService {
             Long id, Long questionId, String content,
             LocalDateTime createdAt, LocalDateTime updatedAt
     ) {}
+    private final PasswordEncoder passwordEncoder;
+    @PersistenceContext
+    private EntityManager em;
+
+    @Transactional
+    public Long signup(SignupRequest req) {
+        if (userRepository.existsByEmail(req.email())) {
+            throw new IllegalArgumentException("이미 사용 중인 이메일입니다.");
+        }
+        if (userRepository.existsByNickname(req.nickname())) {
+            throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
+        }
+
+        User user = User.builder()
+            .email(req.email())
+            .password(passwordEncoder.encode(req.password()))
+            .nickname(req.nickname())
+            .graduationYear(req.graduationYear())
+            .role(Role.ROLE_USER)
+            .build();
+
+        return userRepository.save(user).getId();
+    }
+
+    public MeResponse me(User user) {
+        return new MeResponse(
+            user.getId(),
+            user.getEmail(),
+            user.getNickname(),
+            user.getGraduationYear(),
+            user.getRole(),
+            user.getSchoolName(),
+            user.getStudentCardUrl()
+        );
+    }
+
+    /**
+     *
+     */
+    @Transactional
+    public void verifySchool(User user, String schoolName, String studentCardUrl) {
+        user.verifySchool(schoolName, studentCardUrl);
+    }
 
     // 유저 정보 조회
     public UserDto.Resp getUserInfo(Long userId) {
@@ -56,6 +109,7 @@ public class UserService {
         }
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
         return UserDto.Resp.fromEntity(user);
     }
 
@@ -91,6 +145,7 @@ public class UserService {
                     .setFirstResult((int) pageable.getOffset())
                     .setMaxResults(pageable.getPageSize())
                     .getResultList();
+   
 
             return new PageImpl<>(content, pageable, total);
         } catch (Exception e) {
@@ -128,6 +183,7 @@ public class UserService {
                     .setMaxResults(pageable.getPageSize())
                     .getResultList();
 
+
             return new PageImpl<>(content, pageable, total);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.MYPAGE_COMMENTS_QUERY_FAILED);
@@ -137,6 +193,7 @@ public class UserService {
     // 멘토 답변 조회
     public Page<AnswerSummary> getMyAnswers(Long userId, Pageable pageable) {
         validatePageable(pageable);
+
 
         try{
             String countJpql = """
@@ -167,6 +224,9 @@ public class UserService {
                     .setFirstResult((int) pageable.getOffset())
                     .setMaxResults(pageable.getPageSize())
                     .getResultList();
+
+
+      
 
             return new PageImpl<>(content, pageable, total);
         } catch (Exception e) {
