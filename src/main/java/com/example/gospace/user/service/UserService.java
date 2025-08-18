@@ -1,7 +1,5 @@
 package com.example.gospace.user.service;
 
-import com.example.gospace.common.exception.BusinessException;
-import com.example.gospace.common.error.ErrorCode;
 import com.example.gospace.common.error.ErrorCode;
 import com.example.gospace.common.exception.BusinessException;
 import com.example.gospace.user.dto.MeResponse;
@@ -13,18 +11,12 @@ import com.example.gospace.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.util.List;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,30 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final PasswordEncoder passwordEncoder;
     @PersistenceContext
     private EntityManager em;
-
-    //DTO 변경
-    public record UserInfo(
-            Long id, String email, String nickname, int graduationYear,
-            Role role, String studentCardUrl,
-            LocalDateTime createdAt, LocalDateTime updatedAt
-    ) {}
-    public record PostSummary(
-            Long id, Long schoolId, String category,
-            boolean isAnonymous, String title,
-            LocalDateTime createdAt, LocalDateTime updatedAt
-    ) {}
-    public record CommentSummary(
-            Long id, Long postId, boolean isAnonymous,
-            String content, LocalDateTime createdAt, LocalDateTime updatedAt
-    ) {}
-    public record AnswerSummary(
-            Long id, Long questionId, String content,
-            LocalDateTime createdAt, LocalDateTime updatedAt
-    ) {}
-    private final PasswordEncoder passwordEncoder;
     @PersistenceContext
     private EntityManager em;
 
@@ -76,7 +47,7 @@ public class UserService {
             .password(passwordEncoder.encode(req.password()))
             .nickname(req.nickname())
             .graduationYear(req.graduationYear())
-            .role(Role.ROLE_USER)
+            .role(Role.USER)
             .build();
 
         return userRepository.save(user).getId();
@@ -108,7 +79,7 @@ public class UserService {
             throw new BusinessException(ErrorCode.INVALID_USER_ID);
         }
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         return UserDto.Resp.fromEntity(user);
     }
@@ -120,32 +91,31 @@ public class UserService {
         try {
             String countJpql = "select count(p.id) from Post p where p.user.id = :userId";
             String dataJpql = """
-                select new com.example.gospace.user.service.UserService$PostSummary(
-                    p.id,
-                    (case when p.school is null then null else p.school.id end),
-                    p.category,
-                    p.isAnonymous,
-                    p.title,
-                    p.createdAt,
-                    p.updatedAt
-                )
-                from Post p
-                where p.user.id = :userId
-                order by p.createdAt desc
-            """;
+                    select new com.example.gospace.user.service.UserService$PostSummary(
+                        p.id,
+                        (case when p.school is null then null else p.school.id end),
+                        p.category,
+                        p.isAnonymous,
+                        p.title,
+                        p.createdAt,
+                        p.updatedAt
+                    )
+                    from Post p
+                    where p.user.id = :userId
+                    order by p.createdAt desc
+                """;
 
             long total = em.createQuery(countJpql, Long.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
+                .setParameter("userId", userId)
+                .getSingleResult();
 
             TypedQuery<PostSummary> query = em.createQuery(dataJpql, PostSummary.class)
-                    .setParameter("userId", userId);
+                .setParameter("userId", userId);
 
             List<PostSummary> content = query
-                    .setFirstResult((int) pageable.getOffset())
-                    .setMaxResults(pageable.getPageSize())
-                    .getResultList();
-   
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
 
             return new PageImpl<>(content, pageable, total);
         } catch (Exception e) {
@@ -160,29 +130,28 @@ public class UserService {
         try {
             String countJpql = "select count(c.id) from Comment c where c.user.id = :userId";
             String dataJpql = """
-                select new com.example.gospace.user.service.UserService$CommentSummary(
-                    c.id,
-                    c.post.id,
-                    c.isAnonymous,
-                    c.content,
-                    c.createdAt,
-                    c.updatedAt
-                )
-                from Comment c
-                where c.user.id = :userId
-                order by c.createdAt desc
-            """;
+                    select new com.example.gospace.user.service.UserService$CommentSummary(
+                        c.id,
+                        c.post.id,
+                        c.isAnonymous,
+                        c.content,
+                        c.createdAt,
+                        c.updatedAt
+                    )
+                    from Comment c
+                    where c.user.id = :userId
+                    order by c.createdAt desc
+                """;
 
             long total = em.createQuery(countJpql, Long.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
+                .setParameter("userId", userId)
+                .getSingleResult();
 
             List<CommentSummary> content = em.createQuery(dataJpql, CommentSummary.class)
-                    .setParameter("userId", userId)
-                    .setFirstResult((int) pageable.getOffset())
-                    .setMaxResults(pageable.getPageSize())
-                    .getResultList();
-
+                .setParameter("userId", userId)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
 
             return new PageImpl<>(content, pageable, total);
         } catch (Exception e) {
@@ -194,39 +163,35 @@ public class UserService {
     public Page<AnswerSummary> getMyAnswers(Long userId, Pageable pageable) {
         validatePageable(pageable);
 
-
-        try{
+        try {
             String countJpql = """
-                select count(a.id)
-                from Answer a
-                where a.userId = :userId
-            """;
+                    select count(a.id)
+                    from Answer a
+                    where a.userId = :userId
+                """;
 
             String dataJpql = """
-                select new com.example.gospace.user.service.UserService$AnswerSummary(
-                    a.id,
-                    a.questionId,
-                    a.content,
-                    a.createdAt,
-                    a.updatedAt
-                )
-                from Answer a
-                where a.userId = :userId
-                order by a.createdAt desc
-            """;
+                    select new com.example.gospace.user.service.UserService$AnswerSummary(
+                        a.id,
+                        a.questionId,
+                        a.content,
+                        a.createdAt,
+                        a.updatedAt
+                    )
+                    from Answer a
+                    where a.userId = :userId
+                    order by a.createdAt desc
+                """;
 
             long total = em.createQuery(countJpql, Long.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
+                .setParameter("userId", userId)
+                .getSingleResult();
 
             List<AnswerSummary> content = em.createQuery(dataJpql, AnswerSummary.class)
-                    .setParameter("userId", userId)
-                    .setFirstResult((int) pageable.getOffset())
-                    .setMaxResults(pageable.getPageSize())
-                    .getResultList();
-
-
-      
+                .setParameter("userId", userId)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .getResultList();
 
             return new PageImpl<>(content, pageable, total);
         } catch (Exception e) {
@@ -235,8 +200,43 @@ public class UserService {
     }
 
     private void validatePageable(Pageable pageable) {
-        if (pageable == null) throw new BusinessException(ErrorCode.PAGEABLE_REQUIRED);
+        if (pageable == null) {
+            throw new BusinessException(ErrorCode.PAGEABLE_REQUIRED);
+        }
         int size = pageable.getPageSize();
-        if (size <= 0 || size > 100) throw new BusinessException(ErrorCode.INVALID_PAGEABLE);
+        if (size <= 0 || size > 100) {
+            throw new BusinessException(ErrorCode.INVALID_PAGEABLE);
+        }
+    }
+
+    //DTO 변경
+    public record UserInfo(
+        Long id, String email, String nickname, int graduationYear,
+        Role role, String studentCardUrl,
+        LocalDateTime createdAt, LocalDateTime updatedAt
+    ) {
+
+    }
+
+    public record PostSummary(
+        Long id, Long schoolId, String category,
+        boolean isAnonymous, String title,
+        LocalDateTime createdAt, LocalDateTime updatedAt
+    ) {
+
+    }
+
+    public record CommentSummary(
+        Long id, Long postId, boolean isAnonymous,
+        String content, LocalDateTime createdAt, LocalDateTime updatedAt
+    ) {
+
+    }
+
+    public record AnswerSummary(
+        Long id, Long questionId, String content,
+        LocalDateTime createdAt, LocalDateTime updatedAt
+    ) {
+
     }
 }
