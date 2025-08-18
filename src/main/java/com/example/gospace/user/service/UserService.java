@@ -160,6 +160,7 @@ public class UserService {
     public Page<AnswerSummary> getMyAnswers(Long userId, Pageable pageable) {
         validatePageable(pageable);
 
+
         try {
             // ★ AnswerEntity를 JPQL 엔티티명으로 사용 (네가 올린 AnswerEntity 기준)
             String countJpql = """
