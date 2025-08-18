@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -29,6 +28,10 @@ public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/{userId}/me")
+    public UserDto.Resp me(@PathVariable Long userId) {
+        return userService.getUserInfo(userId);
+    }
 
     @PostMapping("/auth/signup")
     public ResponseEntity<Long> signup(@RequestBody @Valid SignupRequest req) {
@@ -37,16 +40,12 @@ public class UserController {
 
 
     @GetMapping("/me")
-    /*
-    Parsing userId parsing
-     */
-
     public ResponseEntity<MeResponse> me(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(userService.me(user));
     }
 
     @GetMapping("/{userId}/me")
-    public ResponseEntity<UserDto.Resp> me(@PathVariable Long userId) {
+    public ResponseEntity<UserDto.Resp> aboutMe(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.getUserInfo(userId));
     }
 

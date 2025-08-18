@@ -47,6 +47,7 @@ public class QuestionController {
         }
     }
 
+
     // 질문 생성
     @PostMapping
     public ResponseEntity<Long> create(@RequestBody CreateReq dto) {
@@ -70,7 +71,9 @@ public class QuestionController {
         }
     }
 
+
     // 목록
+
     @GetMapping
     public ResponseEntity<List<Resp>> list() {
         try {

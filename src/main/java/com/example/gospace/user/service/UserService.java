@@ -30,6 +30,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     @PersistenceContext
     private EntityManager em;
+    @PersistenceContext
+    private EntityManager em;
 
     @Transactional
     public Long signup(SignupRequest req) {
@@ -45,7 +47,7 @@ public class UserService {
             .password(passwordEncoder.encode(req.password()))
             .nickname(req.nickname())
             .graduationYear(req.graduationYear())
-            .role(Role.ROLE_USER)
+            .role(Role.USER)
             .build();
 
         return userRepository.save(user).getId();
@@ -78,6 +80,7 @@ public class UserService {
         }
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
+
         return UserDto.Resp.fromEntity(user);
     }
 
@@ -160,9 +163,7 @@ public class UserService {
     public Page<AnswerSummary> getMyAnswers(Long userId, Pageable pageable) {
         validatePageable(pageable);
 
-
         try {
-            // ★ AnswerEntity를 JPQL 엔티티명으로 사용 (네가 올린 AnswerEntity 기준)
             String countJpql = """
                     select count(a.id)
                     from Answer a
