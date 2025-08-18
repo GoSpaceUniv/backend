@@ -33,7 +33,7 @@ public class Post extends BaseEntity {
     @Column(name = "category",nullable = false)
     private Category category;
 
-    //익명 여부 User 엔티티 구성시 후보키 가능할듯 + Boolean(x) -> boolean(o) 사용
+
     @Column(name = "is_anon", nullable = false)
     private boolean isAnon;
 
@@ -44,10 +44,6 @@ public class Post extends BaseEntity {
     //길이 제한 없앨 경우 @Lob 사용 및 columnDefinition = "TEXT" 형태
     @Column(name = "content", nullable = false, length = 500)
     private String content;
-
-//    User 엔티티로 옮겨야 하는 코드
-//    @Column(name = "student_card_url", nullable = false, length = 255)
-//    private String studentCardUrl;
 
 
     @CreatedDate

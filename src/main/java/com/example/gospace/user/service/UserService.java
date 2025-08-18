@@ -2,6 +2,7 @@ package com.example.gospace.user.service;
 
 import com.example.gospace.common.error.ErrorCode;
 import com.example.gospace.common.exception.BusinessException;
+import com.example.gospace.school.entity.School;
 import com.example.gospace.user.dto.MeResponse;
 import com.example.gospace.user.dto.SignupRequest;
 import com.example.gospace.user.dto.UserDto;
@@ -58,17 +59,14 @@ public class UserService {
             user.getNickname(),
             user.getGraduationYear(),
             user.getRole(),
-            user.getSchoolName(),
+            user.getSchool(),
             user.getStudentCardUrl()
         );
     }
 
-    /**
-     *
-     */
     @Transactional
-    public void verifySchool(User user, String schoolName, String studentCardUrl) {
-        user.verifySchool(schoolName, studentCardUrl);
+    public void verifySchool(User user, School school, String studentCardUrl) {
+        user.verifySchool(school, studentCardUrl);
     }
 
     // 유저 정보 조회
