@@ -1,6 +1,7 @@
 package com.example.gospace.school.entity;
 
 import com.example.gospace.common.entity.BaseEntity;
+import com.example.gospace.school.dto.SchoolResponseDto;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -126,6 +127,10 @@ public class School extends BaseEntity {
             .foasMemrd(data[23])
             .loadDtm(data[24])
             .build();
+    }
+
+    public SchoolResponseDto toResponse() {
+        return new SchoolResponseDto(this.schoolName, this.orgRdnda);
     }
 
 }

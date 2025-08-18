@@ -2,6 +2,7 @@ package com.example.gospace.school.service;
 
 import com.example.gospace.common.error.ErrorCode;
 import com.example.gospace.common.exception.BusinessException;
+import com.example.gospace.school.dto.SchoolResponseDto;
 import com.example.gospace.school.entity.School;
 import com.example.gospace.school.repository.SchoolRepository;
 import com.opencsv.exceptions.CsvException;
@@ -34,24 +35,32 @@ public class SchoolService {
         }
     }
 
-    private void importCsv(String filePath) throws IOException, CsvException {
-        List<String[]> rows = csvService.readCsv(filePath);
+    private void importCsv(final String filePath) throws IOException, CsvException {
+        final List<String[]> rows = csvService.readCsv(filePath);
 
         rows.remove(0);
 
-        List<School> schools = rows.stream()
-            .map(School::mapToEntity)
+        final List<School> schools = rows.stream()
+            .map(School::mapToEntity).
+            filter(school -> school.getSchoolKindName().equals("고등학교"))
             .collect(Collectors.toList());
 
         schoolRepository.saveAll(schools);
     }
 
     public ResponseEntity<?> findMySchool(final String schoolType) {
-        List<School> schools = schoolRepository.findByAtptOfcdcScCodeOrderBySchoolNameAsc(
+        final List<School> schools = schoolRepository.findByAtptOfcdcScCodeOrderBySchoolNameAsc(
             schoolType);
         if (schools.isEmpty()) {
             throw new BusinessException(ErrorCode.SCHOOL_CODE_NOT_FOUND);
         }
-        return ResponseEntity.ok(schools);
+        List<SchoolResponseDto> response = schools.stream()
+            .map(School::toResponse)
+            .toList();
+
+        if (response.isEmpty()) {
+            throw new BusinessException(ErrorCode.SCHOOL_CODE_NOT_FOUND);
+        }
+        return ResponseEntity.ok(response);
     }
 }
