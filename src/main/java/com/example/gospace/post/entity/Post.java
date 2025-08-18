@@ -1,6 +1,9 @@
 package com.example.gospace.post.entity;
 
+import com.example.gospace.common.entity.BaseEntity;
 import com.example.gospace.post.dto.UpdatePostRequestDto;
+import com.example.gospace.school.entity.School;
+import com.example.gospace.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "posts")
 
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,14 +60,14 @@ public class Post {
     private LocalDateTime updatedAt;
 
 //    FK -> User(id)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 //    FK -> School(id)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "school_id", nullable = false)
-//    private School school;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id", nullable = false)
+    private School school;
 
 //    익명 닉네임 -> 대체 키 가능?
 //    @Column(name = "anno_key", length = 50, unique = true)
@@ -77,10 +80,8 @@ public class Post {
         this.isAnon = isAnon;
     }
 
-    public void update(UpdatePostRequestDto dto) {
-        this.title = dto.title();
-        this.content = dto.content();
-        this.category = dto.category();
-        this.isAnon = dto.isAnon();
-    }
+    public void changeTitle(String title)       { this.title = title; }
+    public void changeContent(String content)   { this.content = content; }
+    public void changeCategory(Category category){ this.category = category; }
+    public void changeIsAnon(boolean isAnon)    { this.isAnon = isAnon; }
 }

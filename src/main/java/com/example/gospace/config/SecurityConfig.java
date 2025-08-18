@@ -26,7 +26,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/signup", "/api/auth/login").permitAll()
+                .requestMatchers("/api/auth/signup", "/api/auth/login", "/v1/api/posts/**").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .requestMatchers("/static/**").permitAll()
                 .anyRequest().authenticated()
