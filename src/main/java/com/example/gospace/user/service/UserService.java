@@ -30,8 +30,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     @PersistenceContext
     private EntityManager em;
-    @PersistenceContext
-    private EntityManager em;
 
     @Transactional
     public Long signup(SignupRequest req) {
