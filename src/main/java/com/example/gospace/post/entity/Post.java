@@ -1,5 +1,6 @@
 package com.example.gospace.post.entity;
 
+import com.example.gospace.comment.entity.Comment;
 import com.example.gospace.post.dto.UpdatePostRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -10,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -56,6 +59,14 @@ public class Post {
     @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Comment> comments = new ArrayList<>();
+
 //    FK -> User(id)
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "user_id", nullable = false)
@@ -82,5 +93,14 @@ public class Post {
         this.content = dto.content();
         this.category = dto.category();
         this.isAnon = dto.isAnon();
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setPost(this); // 양쪽 동기화
+    }
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setPost(null);
     }
 }
