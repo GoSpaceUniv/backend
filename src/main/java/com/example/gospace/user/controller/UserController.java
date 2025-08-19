@@ -44,10 +44,6 @@ public class UserController {
         return ResponseEntity.ok(userService.me(user));
     }
 
-    @GetMapping("/{userId}/me")
-    public ResponseEntity<UserDto.Resp> aboutMe(@PathVariable Long userId) {
-        return ResponseEntity.ok(userService.getUserInfo(userId));
-    }
 
     @GetMapping("/{userId}/mypage/posts")
     public Page<UserService.PostSummary> myPosts(

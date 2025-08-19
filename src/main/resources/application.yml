@@ -1,9 +1,14 @@
 spring:
-    jpa:
-        hibernate:
-            ddl-auto: update
-        properties:
-            hibernate:
-                format_sql: true
-    profiles:
-        active: h2 #일단 기본 h2 -> mysql 변경 가능
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  profiles:
+    active: h2 #일단 기본 h2 -> mysql 변경 가능
+
+
+school:
+  csv:
+    file_path: C:\school.csv

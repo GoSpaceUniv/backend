@@ -1,8 +1,11 @@
 package com.example.gospace.post.service;
 
+import com.example.gospace.comment.repository.CommentRepository;
+import com.example.gospace.comment.service.CommentService;
 import com.example.gospace.post.dto.AddPostRequestDto;
 import com.example.gospace.post.dto.PatchPostRequestDto;
 import com.example.gospace.post.dto.PostResponseDto;
+import com.example.gospace.post.dto.PostWithCommentsResponseDto;
 import com.example.gospace.post.dto.UpdatePostRequestDto;
 import com.example.gospace.post.entity.Category;
 import com.example.gospace.post.entity.Post;
@@ -17,6 +20,7 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final CommentService commentService;
 
     //Create
     @Transactional
@@ -64,6 +68,15 @@ public class PostService {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글 존재 x"));
         postRepository.delete(post);
+    }
+
+    @Transactional(readOnly = true)
+    public PostWithCommentsResponseDto findOneWithComments(Long id) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 존재 x"));
+
+        var comments = commentService.listByPost(id);
+        return PostWithCommentsResponseDto.of(post, comments);
     }
 
 }
