@@ -39,12 +39,10 @@ public class SchoolService {
         final List<String[]> rows = csvService.readCsv(filePath);
 
         rows.remove(0);
-
         final List<School> schools = rows.stream()
             .map(School::mapToEntity).
             filter(school -> school.getSchoolKindName().equals("고등학교"))
             .collect(Collectors.toList());
-
         schoolRepository.saveAll(schools);
     }
 
