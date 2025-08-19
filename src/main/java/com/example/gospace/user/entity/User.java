@@ -55,7 +55,7 @@ public class User implements UserDetails {
     private Role role;
 
     //AWS S3
-    @Column(name = "student_card_url", nullable = false, length = 255)
+    @Column(name = "student_card_url", length = 255)
     private String studentCardUrl;
 
     @CreatedDate

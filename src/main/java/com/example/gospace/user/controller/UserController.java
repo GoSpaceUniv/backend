@@ -1,8 +1,6 @@
 package com.example.gospace.user.controller;
 
-import com.example.gospace.user.dto.MeResponse;
-import com.example.gospace.user.dto.SignupRequest;
-import com.example.gospace.user.dto.UserDto;
+import com.example.gospace.user.dto.*;
 import com.example.gospace.user.entity.User;
 import com.example.gospace.user.service.UserService;
 import jakarta.validation.Valid;
@@ -73,5 +71,10 @@ public class UserController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return userService.getMyAnswers(userId, pageable);
+    }
+
+    @PostMapping("/auth/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest req) {
+        return ResponseEntity.ok(userService.login(req));
     }
 }
