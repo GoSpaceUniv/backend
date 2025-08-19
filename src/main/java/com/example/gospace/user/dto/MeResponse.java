@@ -1,5 +1,6 @@
 package com.example.gospace.user.dto;
 
+import com.example.gospace.school.entity.School;
 import com.example.gospace.user.entity.Role;
 
 public record MeResponse(
@@ -8,6 +9,6 @@ public record MeResponse(
         String nickname,
         int graduationYear,
         Role role,
-        String schoolName,
+        School schoolName,
         String studentCardUrl
 ) {}

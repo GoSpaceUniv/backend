@@ -3,6 +3,7 @@ package com.example.gospace.post.service;
 import com.example.gospace.comment.repository.CommentRepository;
 import com.example.gospace.comment.service.CommentService;
 import com.example.gospace.post.dto.AddPostRequestDto;
+import com.example.gospace.post.dto.PatchPostRequestDto;
 import com.example.gospace.post.dto.PostResponseDto;
 import com.example.gospace.post.dto.PostWithCommentsResponseDto;
 import com.example.gospace.post.dto.UpdatePostRequestDto;
@@ -48,10 +49,14 @@ public class PostService {
     }
     //Update
     @Transactional
-    public PostResponseDto update(Long id, UpdatePostRequestDto request){
-        Post post = postRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("게시글 존재 x"));
+    public PostResponseDto patch(Long id, PatchPostRequestDto req) {
+        Post post = postRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("게시글 존재 x"));
 
-        post.update(request);
+        if (req.title()    != null) post.changeTitle(req.title());
+        if (req.content()  != null) post.changeContent(req.content());
+        if (req.category() != null) post.changeCategory(req.category());
+        if (req.isAnon()   != null) post.changeIsAnon(req.isAnon());
 
         return PostResponseDto.fromEntity(post);
     }
