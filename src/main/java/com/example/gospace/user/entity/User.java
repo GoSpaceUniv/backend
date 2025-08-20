@@ -86,7 +86,6 @@ public class User implements UserDetails {
         String studentCardUrl) {
         this.email = email;
         this.password = password;
-        this.studentCardUrl = studentCardUrl;
         this.nickname = nickname;
         this.graduationYear = graduationYear;
         this.studentCardUrl = studentCardUrl;
