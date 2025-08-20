@@ -11,16 +11,16 @@ spring:
 
 school:
   csv:
-    file_path: C:\school.csv
+    file_path: ${FILE_PATH}
 
 cloud:
   aws:
     s3:
-      bucket: ${AWS_S3_BUCKET}
+      bucket: ${S3_ACCESS_KEY}
     region:
       static: ap-northeast-2
     stack:
       auto: false
     credentials:
-      accessKey: ${AWS_ACCESS_KEY_ID}
-      secretKey: ${AWS_SECRET_ACCESS_KEY}
+      accessKey: ${S3_ACCESS_KEY}
+      secretKey: ${S3_SECRET_KEY}
