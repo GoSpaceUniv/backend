@@ -45,6 +45,7 @@ public class UserService {
             .email(req.email())
             .password(passwordEncoder.encode(req.password()))
             .nickname(req.nickname())
+            .studentCardUrl("http")
             .graduationYear(req.graduationYear())
             .role(Role.USER)
             .build();

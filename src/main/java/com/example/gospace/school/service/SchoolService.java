@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class SchoolService {
 
+    private static final String SCHOOL = "고등학교";
     private final CsvService csvService;
     private final SchoolRepository schoolRepository;
     @Value("${school.csv.file_path}")
@@ -41,7 +42,7 @@ public class SchoolService {
         rows.remove(0);
         final List<School> schools = rows.stream()
             .map(School::mapToEntity).
-            filter(school -> school.getSchoolKindName().equals("고등학교"))
+            filter(school -> school.getSchoolKindName().equals(SCHOOL))
             .collect(Collectors.toList());
         schoolRepository.saveAll(schools);
     }
