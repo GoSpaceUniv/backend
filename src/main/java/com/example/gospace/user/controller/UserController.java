@@ -31,7 +31,6 @@ public class UserController {
         return ResponseEntity.ok(userService.signup(req));
     }
 
-
     @GetMapping("/me")
     public ResponseEntity<MeResponse> me(@AuthenticationPrincipal User user) {
         return ResponseEntity.ok(userService.me(user));
