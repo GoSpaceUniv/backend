@@ -11,4 +11,4 @@ spring:
 
 school:
   csv:
-    file_path: C:\school.csv
+    file_path: ${FILE_PATH}
