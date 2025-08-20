@@ -28,6 +28,7 @@ jobs:
           S3_REGION: ${{ secrets.S3_REGION }}
           S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
           S3_SECRET_KEY: ${{ secrets.S3_SECRET_KEY }}
+          FILE_PATH: ${{ secrets.FILE_PATH }}
         run: ./gradlew clean build -x test
 
       - name: Build Docker image
@@ -71,6 +72,7 @@ jobs:
             S3_REGION=${{ secrets.S3_REGION }}
             S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }}
             S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }}
+            FILE_PATH=${{ secrets.FILE_PATH }}
             EOF
             docker compose pull
             docker compose up -d --remove-orphans
