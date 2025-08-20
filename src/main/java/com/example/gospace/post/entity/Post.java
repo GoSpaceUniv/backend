@@ -1,6 +1,10 @@
 package com.example.gospace.post.entity;
 
+import com.example.gospace.common.entity.BaseEntity;
+import com.example.gospace.comment.entity.Comment;
 import com.example.gospace.post.dto.UpdatePostRequestDto;
+import com.example.gospace.school.entity.School;
+import com.example.gospace.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,6 +14,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @EntityListeners(AuditingEntityListener.class)
 @Entity
@@ -18,7 +24,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "posts")
 
-public class Post {
+public class Post extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +36,7 @@ public class Post {
     @Column(name = "category",nullable = false)
     private Category category;
 
-    //익명 여부 User 엔티티 구성시 후보키 가능할듯 + Boolean(x) -> boolean(o) 사용
+
     @Column(name = "is_anon", nullable = false)
     private boolean isAnon;
 
@@ -42,10 +48,6 @@ public class Post {
     @Column(name = "content", nullable = false, length = 500)
     private String content;
 
-//    User 엔티티로 옮겨야 하는 코드
-//    @Column(name = "student_card_url", nullable = false, length = 255)
-//    private String studentCardUrl;
-
 
     @CreatedDate
     @Column(name = "created_at",nullable = false,updatable = false)
@@ -56,15 +58,23 @@ public class Post {
     @Column(name = "updated_at",nullable = false)
     private LocalDateTime updatedAt;
 
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true,
+            fetch = FetchType.LAZY
+    )
+    private List<Comment> comments = new ArrayList<>();
+
 //    FK -> User(id)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 //    FK -> School(id)
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "school_id", nullable = false)
-//    private School school;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id", nullable = false)
+    private School school;
 
 //    익명 닉네임 -> 대체 키 가능?
 //    @Column(name = "anno_key", length = 50, unique = true)
@@ -77,10 +87,23 @@ public class Post {
         this.isAnon = isAnon;
     }
 
-    public void update(UpdatePostRequestDto dto) {
+    public void changeTitle(String title)       { this.title = title; }
+    public void changeContent(String content)   { this.content = content; }
+    public void changeCategory(Category category){ this.category = category; }
+    public void changeIsAnon(boolean isAnon)    { this.isAnon = isAnon; }
+       public void update(UpdatePostRequestDto dto) {
         this.title = dto.title();
         this.content = dto.content();
         this.category = dto.category();
         this.isAnon = dto.isAnon();
+    }
+
+    public void addComment(Comment comment) {
+        comments.add(comment);
+        comment.setPost(this); // 양쪽 동기화
+    }
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+        comment.setPost(null);
     }
 }

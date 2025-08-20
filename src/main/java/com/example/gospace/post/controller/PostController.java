@@ -1,7 +1,9 @@
 package com.example.gospace.post.controller;
 
 import com.example.gospace.post.dto.AddPostRequestDto;
+import com.example.gospace.post.dto.PatchPostRequestDto;
 import com.example.gospace.post.dto.PostResponseDto;
+import com.example.gospace.post.dto.PostWithCommentsResponseDto;
 import com.example.gospace.post.dto.UpdatePostRequestDto;
 import com.example.gospace.post.entity.Category;
 import com.example.gospace.post.service.PostService;
@@ -50,11 +52,9 @@ public class PostController {
     }
 
     // Update
-    @PutMapping("/{id}")
-    public ResponseEntity<PostResponseDto> update(@PathVariable Long id,
-                                                  @RequestBody UpdatePostRequestDto request) {
-        PostResponseDto updated = postService.update(id, request);
-        return ResponseEntity.ok(updated);
+    @PatchMapping("/{id}")
+    public ResponseEntity<PostResponseDto> patch(@PathVariable Long id, @RequestBody PatchPostRequestDto req) {
+        return ResponseEntity.ok(postService.patch(id, req));
     }
 
     // Delete
@@ -62,5 +62,11 @@ public class PostController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         postService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // Read - 단건 상세 (+댓글 포함)
+    @GetMapping("/{id}")
+    public ResponseEntity<PostWithCommentsResponseDto> findOne(@PathVariable Long id) {
+        return ResponseEntity.ok(postService.findOneWithComments(id));
     }
 }

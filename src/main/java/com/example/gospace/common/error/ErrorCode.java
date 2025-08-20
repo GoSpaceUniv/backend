@@ -40,7 +40,7 @@ public enum ErrorCode {
     ANSWER_NOT_FOUND(HttpStatus.NOT_FOUND, "ANSWER404", "답변을 찾을 수 없습니다."),
     ANSWER_CREATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ANSWER500", "답변 저장에 실패했습니다."),
     ANSWER_UPDATE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ANSWER500", "답변 수정에 실패했습니다."),
-    ANSWER_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ANSWER500", "답변 삭제에 실패했습니다."),
+    ANSWER_DELETE_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "ANSWER500", "답변 삭제에 실패했습니다.");
 
     //School
     SCHOOL_CODE_NOT_FOUND(HttpStatus.NOT_FOUND, "SCHOOL500", "해당 학교를 찾을 수 없습니다.");

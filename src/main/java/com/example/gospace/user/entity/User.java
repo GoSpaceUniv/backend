@@ -1,14 +1,8 @@
 package com.example.gospace.user.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.example.gospace.school.entity.School;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -72,8 +66,9 @@ public class User implements UserDetails {
     private boolean isDeleted = false;
 
     //    FK -> School(id)
-    @Column(name = "school_name", length = 100) // => 추후 외래키로 변경
-    private String schoolName;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "school_id", nullable = true) // 필수면 false
+    private School school;
 
 
     @Builder
@@ -86,8 +81,8 @@ public class User implements UserDetails {
         this.role = (role != null) ? role : Role.USER;
     }
 
-    public void verifySchool(String schoolName, String studentCardUrl) {
-        this.schoolName = schoolName;
+    public void verifySchool(School school, String studentCardUrl) {
+        this.school = school;
         this.studentCardUrl = studentCardUrl;
     }
 
