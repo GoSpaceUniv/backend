@@ -31,6 +31,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final S3StorageService s3StorageService;
     @PersistenceContext
     private EntityManager em;
 
@@ -43,11 +44,13 @@ public class UserService {
             throw new IllegalArgumentException("이미 사용 중인 닉네임입니다.");
         }
 
+        String image = s3StorageService.uploadStudentCard(req.file());
+
         User user = User.builder()
             .email(req.email())
             .password(passwordEncoder.encode(req.password()))
             .nickname(req.nickname())
-            .studentCardUrl("http")
+            .studentCardUrl(image)
             .graduationYear(req.graduationYear())
             .role(Role.USER)
             .build();
