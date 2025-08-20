@@ -5,8 +5,6 @@ services:
     container_name: springboot-app
     ports:
       - "8080:8080"
-    volumes:
-      - /home/ubuntu/school.csv:/app/school.csv  # CSV 파일 마운트 추가
     environment:
       TZ: Asia/Seoul
       S3_BUCKET_NAME: ${S3_BUCKET_NAME}
