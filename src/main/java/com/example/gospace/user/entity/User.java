@@ -1,8 +1,18 @@
 package com.example.gospace.user.entity;
 
 import com.example.gospace.school.entity.School;
-import jakarta.persistence.*;
-
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -78,6 +88,7 @@ public class User implements UserDetails {
         this.password = password;
         this.nickname = nickname;
         this.graduationYear = graduationYear;
+        this.studentCardUrl = studentCardUrl;
         this.role = (role != null) ? role : Role.USER;
     }
 
