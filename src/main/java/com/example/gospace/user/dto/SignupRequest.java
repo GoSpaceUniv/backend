@@ -8,4 +8,6 @@ public record SignupRequest(
         MultipartFile file,
         String nickname,
         int graduationYear
-) { }
+) { 
+
+}
