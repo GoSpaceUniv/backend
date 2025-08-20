@@ -41,7 +41,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Push Docker image
-        run: docker push jongminhong844/monari:latest
+        run: docker push jongminhong844/gospace:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6
@@ -51,7 +51,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             # 대상 디렉토리 생성 및 이동 (EC2 인스턴스의 배포 디렉토리)
-            cd /home/ubuntu/monari || { mkdir -p /home/ubuntu/monari && cd /home/ubuntu/monari; }
+            cd /home/ubuntu/gospace || { mkdir -p /home/ubuntu/gospace && cd /home/ubuntu/gospace; }
             
             # 이미 docker-compose.yml 파일이 있다면 삭제 (최신 파일을 받기 위함)
             [ -f docker-compose.yml ] && rm docker-compose.yml
