@@ -2,6 +2,8 @@ package com.example.gospace.user.service;
 
 import com.example.gospace.common.error.ErrorCode;
 import com.example.gospace.common.exception.BusinessException;
+import com.example.gospace.user.dto.*;
+
 import com.example.gospace.school.entity.School;
 import com.example.gospace.user.dto.MeResponse;
 import com.example.gospace.user.dto.SignupRequest;
@@ -234,5 +236,17 @@ public class UserService {
         LocalDateTime createdAt, LocalDateTime updatedAt
     ) {
 
+    }
+
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest req) {
+        User user = userRepository.findByEmail(req.email())
+                .orElseThrow(() -> new IllegalArgumentException("이메일이 DB에 X"));
+
+        if (!passwordEncoder.matches(req.password(), user.getPassword())) {
+            throw new IllegalArgumentException("비밀번호 일치 X");
+        }
+
+        return LoginResponse.fromEntity(user);
     }
 }
